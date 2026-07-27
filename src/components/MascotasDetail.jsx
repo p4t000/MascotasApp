@@ -118,6 +118,67 @@ function MascotasDetail({ id }) {
     }
   };
 
+  const handleDeleteComentario = async (comentarioId) => {
+    try {
+      const response = await apiMascotas.delete(
+        `/comentarios/${comentarioId}/`,
+      );
+      if (response.status === 204) {
+        console.log("Comentario eliminado", response.data);
+        notyf.success("Comentario eliminado correctamente");
+        setListadoComentarios((comentarios) =>
+          comentarios.filter((comentario) => comentario.id !== comentarioId),
+        );
+      } else {
+        notyf.error("No se pudo eliminar comentario");
+      }
+    } catch (error) {
+      notyf.error("No se pudo eliminar comentario");
+      if (error.response) {
+        // La API respondió con un código de error
+        switch (error.response.status) {
+          case 400:
+            console.error("Solicitud incorrecta.");
+            break;
+
+          case 401:
+            console.error("No autorizado.");
+            break;
+
+          case 403:
+            console.error("Acceso denegado.");
+            break;
+
+          case 404:
+            console.error("Recurso no encontrado.");
+            break;
+
+          case 409:
+            console.error("Conflicto en los datos.");
+            break;
+
+          case 500:
+            console.error("Error interno del servidor.");
+            break;
+
+          default:
+            console.error(
+              `Error ${error.response.status}:`,
+              error.response.data,
+            );
+        }
+      } else if (error.request) {
+        // La petición se envió pero no hubo respuesta
+        console.error("No se recibió respuesta del servidor.");
+      } else {
+        // Error al configurar la petición
+        console.error("Error:", error.message);
+      }
+    } finally {
+      navigate("/mascotas/");
+    }
+  };
+
   const handleDelete = async () => {
     try {
       const response = await apiMascotas.delete(`/mascotas/${id}/`);
@@ -291,6 +352,9 @@ function MascotasDetail({ id }) {
               <h4>Comentario</h4>
               <p>Autor: {comentario.autor}</p>
               <p>Contenido: {comentario.contenido}</p>
+              <button onClick={(e) => handleDeleteComentario(comentario.id)}>
+                Eliminar comentario
+              </button>
             </div>
           ))}
         </>
