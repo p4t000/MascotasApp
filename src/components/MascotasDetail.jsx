@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import apiMascotas from "../api/apiMascotas";
 import { useNavigate } from "react-router-dom";
-import { Notyf } from "notyf"
-import 'notyf/notyf.min.css'
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 function MascotasDetail({ id }) {
   const [listadoComentarios, setListadoComentarios] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [estado, setEstado] = useState('perdida');
+  const [estado, setEstado] = useState("perdida");
+  const [autor, setAutor] = useState("");
+  const [contenido, setContenido] = useState("");
+  const [error, setError] = useState("");
 
   const [estadoChoices, setEstadoChoices] = useState([]);
 
@@ -29,16 +32,16 @@ function MascotasDetail({ id }) {
 
     const fetchChoices = async () => {
       try {
-        const response = await apiMascotas.get('choices/');
+        const response = await apiMascotas.get("choices/");
         if (response.status === 200) {
-            setEstadoChoices(response.data.estado);
-            console.log(response.data.estado);
+          setEstadoChoices(response.data.estado);
+          console.log(response.data.estado);
         }
       } catch (error) {
         console.error("Error fetching choices:", error);
       }
     };
-  
+
     fetchComentarios();
     fetchChoices();
   }, []);
@@ -47,101 +50,251 @@ function MascotasDetail({ id }) {
 
   const notyf = new Notyf({
     position: {
-      x: 'center',
-      y: 'top'
-    }
-  })
+      x: "center",
+      y: "top",
+    },
+  });
 
-   const handleSubmit = async (e) => {
-      e.preventDefault();
-      
-      // Aquí puedes manejar el envío del formulario, por ejemplo, enviar los datos a un servidor o actualizar el estado de la aplicación.
-      console.log("Formulario enviado");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      try {
-        const response = await apiMascotas.patch(`/mascotas/${id}/`, {estado: estado});
-        console.log(response);
-        if (response.status === 200){
-          console.log("Estado actualizado:", response.data);
-          notyf.success("Estado actualizado correctamente");
-        }
-        else {
-          notyf.error("No se pudo actualizar el estado de la mascota");
-        }
-      } catch (error) {
-        if (error.response) {
-      // La API respondió con un código de error
-          switch (error.response.status) {
-            case 400:
-              console.error("Solicitud incorrecta.");
-              break;
+    // Aquí puedes manejar el envío del formulario, por ejemplo, enviar los datos a un servidor o actualizar el estado de la aplicación.
+    console.log("Formulario enviado");
 
-            case 401:
-              console.error("No autorizado.");
-              break;
-
-            case 403:
-              console.error("Acceso denegado.");
-              break;
-
-            case 404:
-              console.error("Recurso no encontrado.");
-              break;
-
-            case 409:
-              console.error("Conflicto en los datos.");
-              break;
-
-            case 500:
-              console.error("Error interno del servidor.");
-              break;
-
-            default:
-              console.error(
-                `Error ${error.response.status}:`,
-                error.response.data
-              );
-           }
-
-        } else if (error.request) {
-          // La petición se envió pero no hubo respuesta
-          console.error("No se recibió respuesta del servidor.");
-
-        } else {
-          // Error al configurar la petición
-          console.error("Error:", error.message);
-        }
-      } finally {
-        navigate('/mascotas/');
+    try {
+      const response = await apiMascotas.patch(`/mascotas/${id}/`, {
+        estado: estado,
+      });
+      console.log(response);
+      if (response.status === 200) {
+        console.log("Estado actualizado:", response.data);
+        notyf.success("Estado actualizado correctamente");
+      } else {
+        notyf.error("No se pudo actualizar el estado de la mascota");
       }
-    
+    } catch (error) {
+      if (error.response) {
+        // La API respondió con un código de error
+        switch (error.response.status) {
+          case 400:
+            console.error("Solicitud incorrecta.");
+            break;
+
+          case 401:
+            console.error("No autorizado.");
+            break;
+
+          case 403:
+            console.error("Acceso denegado.");
+            break;
+
+          case 404:
+            console.error("Recurso no encontrado.");
+            break;
+
+          case 409:
+            console.error("Conflicto en los datos.");
+            break;
+
+          case 500:
+            console.error("Error interno del servidor.");
+            break;
+
+          default:
+            console.error(
+              `Error ${error.response.status}:`,
+              error.response.data,
+            );
+        }
+      } else if (error.request) {
+        // La petición se envió pero no hubo respuesta
+        console.error("No se recibió respuesta del servidor.");
+      } else {
+        // Error al configurar la petición
+        console.error("Error:", error.message);
+      }
+    } finally {
+      navigate("/mascotas/");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await apiMascotas.delete(`/mascotas/${id}/`);
+      if (response.status === 204) {
+        console.log("Mascota eliminada", response.data);
+        notyf.success("Mascota eliminada correctamente");
+      } else {
+        notyf.error("No se pudo eliminar mascota");
+      }
+    } catch (error) {
+      notyf.error("No se pudo eliminar mascota");
+      if (error.response) {
+        // La API respondió con un código de error
+        switch (error.response.status) {
+          case 400:
+            console.error("Solicitud incorrecta.");
+            break;
+
+          case 401:
+            console.error("No autorizado.");
+            break;
+
+          case 403:
+            console.error("Acceso denegado.");
+            break;
+
+          case 404:
+            console.error("Recurso no encontrado.");
+            break;
+
+          case 409:
+            console.error("Conflicto en los datos.");
+            break;
+
+          case 500:
+            console.error("Error interno del servidor.");
+            break;
+
+          default:
+            console.error(
+              `Error ${error.response.status}:`,
+              error.response.data,
+            );
+        }
+      } else if (error.request) {
+        // La petición se envió pero no hubo respuesta
+        console.error("No se recibió respuesta del servidor.");
+      } else {
+        // Error al configurar la petición
+        console.error("Error:", error.message);
+      }
+    } finally {
+      navigate("/mascotas/");
+    }
+  };
+
+  const handleSubmitComentario = async (e) => {
+    e.preventDefault();
+
+    if (autor.trim() === "") {
+      setError("Autor no puede ser vacío");
+      return;
     }
 
-  
+    if (contenido.trim() === "") {
+      setError("Comentario no puede ser vacío");
+      return;
+    }
+
+    const comentario = {
+      autor: autor,
+      contenido: contenido,
+    };
+    try {
+      const response = await apiMascotas.post(
+        `/mascotas/${id}/comentar/`,
+        comentario,
+      );
+      if (response.status === 201) {
+        console.log("Comentario creado:", response.data);
+        notyf.success("Comentario creado con éxito");
+      } else {
+        notyf.error("No se pudo crear comentario");
+      }
+    } catch (error) {
+      notyf.error("No se pudo crear comentario");
+      if (error.response) {
+        // La API respondió con un código de error
+        switch (error.response.status) {
+          case 400:
+            console.error("Solicitud incorrecta.");
+            break;
+
+          case 401:
+            console.error("No autorizado.");
+            break;
+
+          case 403:
+            console.error("Acceso denegado.");
+            break;
+
+          case 404:
+            console.error("Recurso no encontrado.");
+            break;
+
+          case 409:
+            console.error("Conflicto en los datos.");
+            break;
+
+          case 500:
+            console.error("Error interno del servidor.");
+            break;
+
+          default:
+            console.error(
+              `Error ${error.response.status}:`,
+              error.response.data,
+            );
+        }
+      } else if (error.request) {
+        // La petición se envió pero no hubo respuesta
+        console.error("No se recibió respuesta del servidor.");
+      } else {
+        // Error al configurar la petición
+        console.error("Error:", error.message);
+      }
+    } finally {
+      navigate("/mascotas/listado/");
+    }
+  };
+
   return (
     <>
       <button onClick={() => setIsVisible(!isVisible)}>
         {isVisible ? "Ocultar detalles" : "Ver detalles"}
       </button>
-        {isVisible && (
-          <>
-            <p>Cambiar estado de mascota</p>
-            <form onSubmit={e => handleSubmit(e)}>
-              <label>Estado:</label>
-              <select onChange={e => setEstado(e.target.value)}>
-                {estadoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
-              </select>
-              <button type="submit">Guardar</button>
-            </form>
-            {listadoComentarios.map((comentario) => (
-              <div key={comentario.id}>
-                <h4>Comentario</h4>
-                <p>Autor: {comentario.autor}</p>
-                <p>Contenido: {comentario.contenido}</p>
-              </div>
-            ))}
-          </>
-        )}
+      {isVisible && (
+        <>
+          <button onClick={(e) => handleDelete()}>Eliminar mascota</button>
+          <p>Agregar comentario</p>
+          <form onSubmit={(e) => handleSubmitComentario(e)}>
+            <label>Autor:</label>
+            <input
+              type="text"
+              placeholder="Autor"
+              onChange={(e) => setAutor(e.target.value)}
+            ></input>
+            <label>Comentario:</label>
+            <input
+              type="text"
+              placeholder="Comentario"
+              onChange={(e) => setContenido(e.target.value)}
+            ></input>
+            <button type="submit">Guardar</button>
+            <p>{error}</p>
+          </form>
+          <p>Cambiar estado de mascota</p>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <label>Estado:</label>
+            <select onChange={(e) => setEstado(e.target.value)}>
+              {estadoChoices.map((choice) => (
+                <option key={choice.value} value={choice.value}>
+                  {choice.label}
+                </option>
+              ))}
+            </select>
+            <button type="submit">Guardar</button>
+          </form>
+          {listadoComentarios.map((comentario) => (
+            <div key={comentario.id}>
+              <h4>Comentario</h4>
+              <p>Autor: {comentario.autor}</p>
+              <p>Contenido: {comentario.contenido}</p>
+            </div>
+          ))}
+        </>
+      )}
     </>
   );
 }
