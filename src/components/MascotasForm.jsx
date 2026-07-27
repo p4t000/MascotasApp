@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import apiMascotas from "../api/apiMascotas";
 import { useNavigate } from "react-router-dom";
+import { Notyf } from "notyf"
+import 'notyf/notyf.min.css'
 
 function MascotasForm() {
     const [nombre, setNombre] = useState('');
@@ -78,6 +80,13 @@ function MascotasForm() {
 
     const navigate = useNavigate();
 
+    const notyf = new Notyf({
+    position: {
+      x: 'center',
+      y: 'top'
+    }
+    })
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -132,12 +141,68 @@ function MascotasForm() {
         formData.append('raza', raza);
         formData.append('sexo', sexo);
 
-        const response = await apiMascotas.post('/mascotas/', formData);
+        try {
+            const response = await apiMascotas.post('/mascotas/', formData);
+            if (response.status === 200) {
+                console.log("Estado actualizado:", response.data);
+                notyf.success("Mascota creada con éxito");
+            } else {
+                notyf.error("No se pudo crear mascota");
+            }
+            
+        } catch (error) {
 
-        setError("");
+            if (error.response) {
+                // La API respondió con un código de error
+                switch (error.response.status) {
+                    case 400:
+                    console.error("Solicitud incorrecta.");
+                    break;
 
-        console.log(response);
-        navigate('/mascotas/listado'); // Redirige a la página de listado después de enviar el formulario
+                    case 401:
+                    console.error("No autorizado.");
+                    break;
+
+                    case 403:
+                    console.error("Acceso denegado.");
+                    break;
+
+                    case 404:
+                    console.error("Recurso no encontrado.");
+                    break;
+
+                    case 409:
+                    console.error("Conflicto en los datos.");
+                    break;
+
+                    case 500:
+                    console.error("Error interno del servidor.");
+                    break;
+
+                    default:
+                    console.error(
+                        `Error ${error.response.status}:`,
+                        error.response.data
+                    );
+                }
+
+            } else if (error.request) {
+            // La petición se envió pero no hubo respuesta
+            console.error("No se recibió respuesta del servidor.");
+
+            } else {
+            // Error al configurar la petición
+            console.error("Error:", error.message);
+            }
+        } finally {
+        
+            setError("");
+            console.log(response);
+            navigate('/mascotas/listado'); // Redirige a la página de listado después de enviar el formulario
+        }
+        
+
+        
     }
 
     return (
