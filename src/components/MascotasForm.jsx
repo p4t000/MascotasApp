@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 function MascotasForm() {
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
-    const [tipoAnimal, setTipoAnimal] = useState('');
-    const [estado, setEstado] = useState('');
+    const [tipoAnimal, setTipoAnimal] = useState('perro');
+    const [estado, setEstado] = useState('perdida');
     const [imagen, setImagen] = useState('');
-    const [tamano, setTamano] = useState('');
+    const [tamano, setTamano] = useState('pequeno');
     const [edad, setEdad] = useState('');
     const [raza, setRaza] = useState('');
-    const [sexo, setSexo] = useState('');
+    const [sexo, setSexo] = useState('macho');
+    const [error, setError] = useState('');
 
     const [estadoChoices, setEstadoChoices] = useState([]);
     const [tipoAnimalChoices, setTipoAnimalChoices] = useState([]);
@@ -75,16 +76,49 @@ function MascotasForm() {
         ]);
     }, []);
 
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const navigate = useNavigate();
-
+        
         // Aquí puedes manejar el envío del formulario, por ejemplo, enviar los datos a un servidor o actualizar el estado de la aplicación.
         console.log("Formulario enviado");
 
         // Validaciones
+        if (nombre.trim() === ""){
+            setError("Nombre no puede estar vacío");
+            return
+        }
 
+        if (descripcion.trim() === ""){
+            setError("Descripción no puede estar vacío");
+            return
+        }
+
+        if (raza.trim() === ""){
+            setError("Raza no puede estar vacío");
+            return
+        }
+
+        if (nombre.trim() === ""){
+            setError("Nombre no puede estar vacío");
+            return
+        }
+
+        if (edad <= 0){
+            setError("Edad debe ser un número mayor a 0");
+            return
+        }
+
+        if (isNaN(edad)){
+            setError("Edad debe ser un número");
+            return
+        }
+
+        if (!imagen) {
+            setError('Debe seleccionar una imagen');
+            return;
+    }
 
         // Crear FormData para enviar la imagen y los demás datos
         const formData = new FormData();
@@ -100,30 +134,42 @@ function MascotasForm() {
 
         const response = await apiMascotas.post('/mascotas/', formData);
 
+        setError("");
+
         console.log(response);
         navigate('/mascotas/listado'); // Redirige a la página de listado después de enviar el formulario
     }
 
     return (
         <form onSubmit={e => handleSubmit(e)} encType="multipart/form-data">
+            <label>Nombre:</label>
             <input type="text" placeholder="Nombre" onChange={e => setNombre(e.target.value)}/>
+            <label>Descripción:</label>
             <input type="text" placeholder="Descripción" onChange={e => setDescripcion(e.target.value)}/>
+            <label>Raza:</label>
             <input type="text" placeholder="Raza" onChange={e => setRaza(e.target.value)}/>
+            <label>Edad:</label>
             <input type="number" placeholder="Edad" onChange={e => setEdad(e.target.value)}/>
+            <label>Estado:</label>
             <select onChange={e => setEstado(e.target.value)}>
                 {estadoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
+            <label>Tipo animal:</label>
             <select onChange={e => setTipoAnimal(e.target.value)}>
                 {tipoAnimalChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
+            <label>Tamaño:</label>
             <select onChange={e => setTamano(e.target.value)}>
                 {tamanoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
+            <label>Sexo:</label>
             <select onChange={e => setSexo(e.target.value)}>
                 {sexoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
+            <label>Imagen:</label>
             <input onChange={e => setImagen(e.target.files[0])} type="file" placeholder="Imagen" />
             <button type="submit">Guardar</button>
+            <p>{error}</p>
         </form >
     )
 }
