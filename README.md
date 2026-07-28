@@ -42,13 +42,13 @@ La aplicación consume una API REST externa encargada de almacenar y gestionar l
 ## 1. Clonar repositorio
 
 ```bash
-git clone https://github.com/usuario/proyecto-mascotas.git
+git clone https://github.com/p4t000/MascotasApp.git
 ```
 
 ## 2. Acceder al proyecto
 
 ```bash
-cd proyecto-mascotas
+cd Mascotas-App
 ```
 
 ## 3. Instalar dependencias
