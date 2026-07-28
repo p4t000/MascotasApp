@@ -48,7 +48,7 @@ git clone https://github.com/p4t000/MascotasApp.git
 ## 2. Acceder al proyecto
 
 ```bash
-cd Mascotas-App
+cd MascotasApp
 ```
 
 ## 3. Instalar dependencias
