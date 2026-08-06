@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import MascotasItem from "./MascotasItem";
 import apiMascotas from "../api/apiMascotas";
+import './MascotasList.css'
 
 function MascotasList() {
     const [listadoMascotas, setListadoMascotas] = useState([]);
 
     useEffect(() => {
         const fetchMascotas = async () => {
-            // Peticion api hacia mascotas
             try{
-                // Peticion GET
                 const response = await apiMascotas.get("mascotas/");
                 console.log(response);
                 if (response.status === 200) {
@@ -25,10 +24,14 @@ function MascotasList() {
 
     return (
         <article>
-            <h3>Mascotas List</h3>
-            <div>
-                <MascotasItem listado={listadoMascotas} />
-            </div>
+            <h3 className="mascotas-list__title">Mascotas List</h3>
+            {listadoMascotas.length === 0 ? (
+                <p className="mascotas-list__empty">No hay mascotas registradas.</p>
+            ) : (
+                <div className="mascotas-list__grid">
+                    <MascotasItem listado={listadoMascotas} />
+                </div>
+            )}
         </article>
     )
 }

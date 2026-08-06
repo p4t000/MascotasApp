@@ -1,20 +1,17 @@
 import { Link, Outlet } from "react-router-dom";
+import './MascotasPage.css'
 
 function MascotasPage() {
     return (
-        <section>
-            <h2>Página mascotas</h2>
+        <section className="mascotas">
+            <h2 className="mascotas__title">Página mascotas</h2>
 
-            <ul>
-                <li>
-                    <Link to="formulario">Formulario</Link>
-                </li>
-                <li>
-                    <Link to="listado">Listado</Link>
-                </li>
-            </ul>
+            <nav className="mascotas__nav">
+                <Link className="mascotas__link" to="formulario">Formulario</Link>
+                <Link className="mascotas__link" to="listado">Listado</Link>
+            </nav>
 
-            <Outlet /> {/* Renderiza el componente hijo correspondiente a la ruta anidada */}
+            <Outlet />
         </section>
     );
 }

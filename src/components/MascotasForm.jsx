@@ -3,6 +3,7 @@ import apiMascotas from "../api/apiMascotas";
 import { useNavigate } from "react-router-dom";
 import { Notyf } from "notyf"
 import 'notyf/notyf.min.css'
+import './MascotasForm.css'
 
 function MascotasForm() {
     const [nombre, setNombre] = useState('');
@@ -150,8 +151,7 @@ function MascotasForm() {
                 notyf.error("No se pudo crear mascota");
             }
             
-        } catch (error) {
-            notyf.error("No se pudo crear mascota");
+        } catch (error) {            notyf.error("No se pudo crear mascota");
             if (error.response) {
                 // La API respondió con un código de error
                 switch (error.response.status) {
@@ -197,7 +197,6 @@ function MascotasForm() {
         } finally {
         
             setError("");
-            console.log(response);
             navigate('/mascotas/listado'); // Redirige a la página de listado después de enviar el formulario
         }
         
@@ -206,35 +205,36 @@ function MascotasForm() {
     }
 
     return (
-        <form onSubmit={e => handleSubmit(e)} encType="multipart/form-data">
-            <label>Nombre:</label>
-            <input type="text" placeholder="Nombre" onChange={e => setNombre(e.target.value)}/>
-            <label>Descripción:</label>
-            <input type="text" placeholder="Descripción" onChange={e => setDescripcion(e.target.value)}/>
-            <label>Raza:</label>
-            <input type="text" placeholder="Raza" onChange={e => setRaza(e.target.value)}/>
-            <label>Edad:</label>
-            <input type="number" placeholder="Edad" onChange={e => setEdad(e.target.value)}/>
-            <label>Estado:</label>
-            <select onChange={e => setEstado(e.target.value)}>
+        <form className="mascotas-form" onSubmit={e => handleSubmit(e)} encType="multipart/form-data">
+            <h3 className="mascotas-form__title">Registrar mascota</h3>
+            <label className="mascotas-form__label">Nombre:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Nombre" onChange={e => setNombre(e.target.value)}/>
+            <label className="mascotas-form__label">Descripción:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Descripción" onChange={e => setDescripcion(e.target.value)}/>
+            <label className="mascotas-form__label">Raza:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Raza" onChange={e => setRaza(e.target.value)}/>
+            <label className="mascotas-form__label">Edad:</label>
+            <input className="mascotas-form__input" type="number" placeholder="Edad" onChange={e => setEdad(e.target.value)}/>
+            <label className="mascotas-form__label">Estado:</label>
+            <select className="mascotas-form__select" onChange={e => setEstado(e.target.value)}>
                 {estadoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
-            <label>Tipo animal:</label>
-            <select onChange={e => setTipoAnimal(e.target.value)}>
+            <label className="mascotas-form__label">Tipo animal:</label>
+            <select className="mascotas-form__select" onChange={e => setTipoAnimal(e.target.value)}>
                 {tipoAnimalChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
-            <label>Tamaño:</label>
-            <select onChange={e => setTamano(e.target.value)}>
+            <label className="mascotas-form__label">Tamaño:</label>
+            <select className="mascotas-form__select" onChange={e => setTamano(e.target.value)}>
                 {tamanoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
-            <label>Sexo:</label>
-            <select onChange={e => setSexo(e.target.value)}>
+            <label className="mascotas-form__label">Sexo:</label>
+            <select className="mascotas-form__select" onChange={e => setSexo(e.target.value)}>
                 {sexoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
             </select>
-            <label>Imagen:</label>
-            <input onChange={e => setImagen(e.target.files[0])} type="file" placeholder="Imagen" />
-            <button type="submit">Guardar</button>
-            <p>{error}</p>
+            <label className="mascotas-form__label">Imagen:</label>
+            <input className="mascotas-form__input" onChange={e => setImagen(e.target.files[0])} type="file" placeholder="Imagen" />
+            <button className="mascotas-form__button" type="submit">Guardar</button>
+            <p className="mascotas-form__error">{error}</p>
         </form >
     )
 }

@@ -3,6 +3,7 @@ import apiMascotas from "../api/apiMascotas";
 import { useNavigate } from "react-router-dom";
 import { Notyf } from "notyf"
 import 'notyf/notyf.min.css'
+import './MascotasDetail.css'
 
 function MascotasDetail({ id }) {
   const [listadoComentarios, setListadoComentarios] = useState([]);
@@ -46,7 +47,7 @@ function MascotasDetail({ id }) {
     fetchComentarios();
     fetchChoices();
    
-  }, []);
+  }, [id]);
 
   const navigate = useNavigate();
 
@@ -320,38 +321,38 @@ function MascotasDetail({ id }) {
   
   return (
     <>
-      <button onClick={() => setIsVisible(!isVisible)}>
+      <button className="detalle__toggle" onClick={() => setIsVisible(!isVisible)}>
         {isVisible ? "Ocultar detalles" : "Ver detalles"}
       </button>
         {isVisible && (
-          <>
-            <button onClick={e => handleDelete()}>Eliminar mascota</button>
-            <p>Agregar comentario</p>
+          <div className="detalle">
+            <button className="detalle__btn detalle__btn--peligro" onClick={() => handleDelete()}>Eliminar mascota</button>
+            <p className="detalle__subtitle">Agregar comentario</p>
             <form onSubmit={e => handleSubmitComentario(e)}>
-              <label>Autor:</label>
-              <input type="text" placeholder="Autor" onChange={e => setAutor(e.target.value)}></input>
-              <label>Comentario:</label>
-              <input type="text" placeholder="Comentario" onChange={e => setContenido(e.target.value)}></input>
-              <button type="submit">Guardar</button>
-              <p>{error}</p>
+              <label className="detalle__label">Autor:</label>
+              <input className="detalle__input" type="text" placeholder="Autor" onChange={e => setAutor(e.target.value)}></input>
+              <label className="detalle__label">Comentario:</label>
+              <input className="detalle__input" type="text" placeholder="Comentario" onChange={e => setContenido(e.target.value)}></input>
+              <button className="detalle__btn detalle__btn--guardar" type="submit">Guardar</button>
+              <p className="detalle__error">{error}</p>
             </form>
-            <p>Cambiar estado de mascota</p>
+            <p className="detalle__subtitle">Cambiar estado de mascota</p>
             <form onSubmit={e => handleSubmit(e)}>
-              <label>Estado:</label>
-              <select onChange={e => setEstado(e.target.value)}>
+              <label className="detalle__label">Estado:</label>
+              <select className="detalle__select" onChange={e => setEstado(e.target.value)}>
                 {estadoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
               </select>
-              <button type="submit">Guardar</button>
+              <button className="detalle__btn detalle__btn--guardar" type="submit">Guardar</button>
             </form>
             {listadoComentarios.map((comentario) => (
-              <div key={comentario.id}>
+              <div className="detalle__comentario" key={comentario.id}>
                 <h4>Comentario</h4>
                 <p>Autor: {comentario.autor}</p>
                 <p>Contenido: {comentario.contenido}</p>
-                <button onClick={e => handleDeleteComentario(comentario.id)}>Eliminar comentario</button>
+                <button className="detalle__btn detalle__btn--peligro" onClick={() => handleDeleteComentario(comentario.id)}>Eliminar comentario</button>
               </div>
             ))}
-          </>
+          </div>
         )}
     </>
   );
