@@ -143,15 +143,15 @@ function MascotasForm() {
 
         try {
             const response = await apiMascotas.post('/mascotas/', formData);
-            if (response.status === 200) {
-                console.log("Estado actualizado:", response.data);
+            if (response.status === 201) {
+                console.log("Mascota creada:", response.data);
                 notyf.success("Mascota creada con éxito");
             } else {
                 notyf.error("No se pudo crear mascota");
             }
             
         } catch (error) {
-
+            notyf.error("No se pudo crear mascota");
             if (error.response) {
                 // La API respondió con un código de error
                 switch (error.response.status) {
