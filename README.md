@@ -1,16 +1,80 @@
-# React + Vite
+# 🐾 Sistema de Gestión de Mascotas - React JS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Por: Mario Barahona y Patricio Leiva
 
-Currently, two official plugins are available:
+Aplicación web desarrollada con **React JS** que permite gestionar información de mascotas mediante el consumo de una **API REST**. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El sistema permite realizar operaciones CRUD (**Create, Read, Update, Delete**) sobre las mascotas, permitiendo listar, registrar, editar y eliminar registros.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📌 Características principales
 
-## Expanding the ESLint configuration
+- ✅ Listado de mascotas mediante petición **GET**.
+- ✅ Registro de nuevas mascotas mediante petición **POST**.
+- ✅ Actualización parcial de información mediante petición **PATCH**.
+- ✅ Eliminación de mascotas mediante petición **DELETE**.
+- ✅ Visualización del detalle de cada mascota.
+- ✅ Manejo de formularios utilizando React.
+- ✅ Consumo de API mediante Axios.
+- ✅ Manejo de estados con Hooks de React.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+# 🛠️ Tecnologías utilizadas
+
+## Frontend
+
+- React JS
+- JavaScript ES6+
+- HTML5
+- Axios
+- React Hooks:
+  - `useState`
+  - `useEffect`
+
+## Backend
+
+La aplicación consume una API REST externa encargada de almacenar y gestionar la información de las mascotas.
+
+# ⚙️ Instalación y ejecución
+
+## 1. Clonar repositorio
+
+```bash
+git clone https://github.com/p4t000/MascotasApp.git
+```
+
+## 2. Acceder al proyecto
+
+```bash
+cd MascotasApp
+```
+
+## 3. Instalar dependencias
+
+```bash
+npm install
+```
+```bash
+npm install react-router-dom
+```
+```bash
+npm install axios
+```
+```bash
+npm install notyf
+```
+
+## 4. Ejecutar aplicación
+
+```bash
+npm run dev
+```
+
+# Uso de IA gratuita
+
+En este proyecto se utilizó la asistencia de ChatGPT y Google (Gemini), principalmente para:
+
+- Creación de un botón y su lógica que permita ocultar/mostrar detalles de la mascota (comentarios, botón de eliminar y formulario para cambiar el estado de la mascota)
+- Manejo de errores (catch) que arroja la API, para lograr capturarlos y mostrarlos por consola.
