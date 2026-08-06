@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import apiMascotas from "../api/apiMascotas";
 import { useNavigate } from "react-router-dom";
-import { Notyf } from "notyf";
-import "notyf/notyf.min.css";
+import { Notyf } from "notyf"
+import 'notyf/notyf.min.css'
+import './MascotasForm.css'
 
 function MascotasForm() {
   const [nombre, setNombre] = useState("");
@@ -101,47 +102,76 @@ function MascotasForm() {
       return;
     }
 
-    if (descripcion.trim() === "") {
-      setError("Descripción no puede estar vacío");
-      return;
-    }
+        // Crear FormData para enviar la imagen y los demás datos
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('descripcion', descripcion);
+        formData.append('tipo_animal', tipoAnimal);
+        formData.append('estado', estado);
+        formData.append('imagen', imagen);
+        formData.append('tamano', tamano);
+        formData.append('edad', edad);
+        formData.append('raza', raza);
+        formData.append('sexo', sexo);
 
-    if (raza.trim() === "") {
-      setError("Raza no puede estar vacío");
-      return;
-    }
+        try {
+            const response = await apiMascotas.post('/mascotas/', formData);
+            if (response.status === 201) {
+                console.log("Mascota creada:", response.data);
+                notyf.success("Mascota creada con éxito");
+            } else {
+                notyf.error("No se pudo crear mascota");
+            }
+            
+        } catch (error) {            notyf.error("No se pudo crear mascota");
+            if (error.response) {
+                // La API respondió con un código de error
+                switch (error.response.status) {
+                    case 400:
+                    console.error("Solicitud incorrecta.");
+                    break;
 
-    if (nombre.trim() === "") {
-      setError("Nombre no puede estar vacío");
-      return;
-    }
+                    case 401:
+                    console.error("No autorizado.");
+                    break;
 
-    if (edad <= 0) {
-      setError("Edad debe ser un número mayor a 0");
-      return;
-    }
+                    case 403:
+                    console.error("Acceso denegado.");
+                    break;
 
-    if (isNaN(edad)) {
-      setError("Edad debe ser un número");
-      return;
-    }
+                    case 404:
+                    console.error("Recurso no encontrado.");
+                    break;
 
-    if (!imagen) {
-      setError("Debe seleccionar una imagen");
-      return;
-    }
+                    case 409:
+                    console.error("Conflicto en los datos.");
+                    break;
 
-    // Crear FormData para enviar la imagen y los demás datos
-    const formData = new FormData();
-    formData.append("nombre", nombre);
-    formData.append("descripcion", descripcion);
-    formData.append("tipo_animal", tipoAnimal);
-    formData.append("estado", estado);
-    formData.append("imagen", imagen);
-    formData.append("tamano", tamano);
-    formData.append("edad", edad);
-    formData.append("raza", raza);
-    formData.append("sexo", sexo);
+                    case 500:
+                    console.error("Error interno del servidor.");
+                    break;
+
+                    default:
+                    console.error(
+                        `Error ${error.response.status}:`,
+                        error.response.data
+                    );
+                }
+
+            } else if (error.request) {
+            // La petición se envió pero no hubo respuesta
+            console.error("No se recibió respuesta del servidor.");
+
+            } else {
+            // Error al configurar la petición
+            console.error("Error:", error.message);
+            }
+        } finally {
+        
+            setError("");
+            navigate('/mascotas/listado'); // Redirige a la página de listado después de enviar el formulario
+        }
+        
 
     try {
       const response = await apiMascotas.post("/mascotas/", formData);
@@ -200,74 +230,39 @@ function MascotasForm() {
     }
   };
 
-  return (
-    <form onSubmit={(e) => handleSubmit(e)} encType="multipart/form-data">
-      <label>Nombre:</label>
-      <input
-        type="text"
-        placeholder="Nombre"
-        onChange={(e) => setNombre(e.target.value)}
-      />
-      <label>Descripción:</label>
-      <input
-        type="text"
-        placeholder="Descripción"
-        onChange={(e) => setDescripcion(e.target.value)}
-      />
-      <label>Raza:</label>
-      <input
-        type="text"
-        placeholder="Raza"
-        onChange={(e) => setRaza(e.target.value)}
-      />
-      <label>Edad:</label>
-      <input
-        type="number"
-        placeholder="Edad"
-        onChange={(e) => setEdad(e.target.value)}
-      />
-      <label>Estado:</label>
-      <select onChange={(e) => setEstado(e.target.value)}>
-        {estadoChoices.map((choice) => (
-          <option key={choice.value} value={choice.value}>
-            {choice.label}
-          </option>
-        ))}
-      </select>
-      <label>Tipo animal:</label>
-      <select onChange={(e) => setTipoAnimal(e.target.value)}>
-        {tipoAnimalChoices.map((choice) => (
-          <option key={choice.value} value={choice.value}>
-            {choice.label}
-          </option>
-        ))}
-      </select>
-      <label>Tamaño:</label>
-      <select onChange={(e) => setTamano(e.target.value)}>
-        {tamanoChoices.map((choice) => (
-          <option key={choice.value} value={choice.value}>
-            {choice.label}
-          </option>
-        ))}
-      </select>
-      <label>Sexo:</label>
-      <select onChange={(e) => setSexo(e.target.value)}>
-        {sexoChoices.map((choice) => (
-          <option key={choice.value} value={choice.value}>
-            {choice.label}
-          </option>
-        ))}
-      </select>
-      <label>Imagen:</label>
-      <input
-        onChange={(e) => setImagen(e.target.files[0])}
-        type="file"
-        placeholder="Imagen"
-      />
-      <button type="submit">Guardar</button>
-      <p>{error}</p>
-    </form>
-  );
+    return (
+        <form className="mascotas-form" onSubmit={e => handleSubmit(e)} encType="multipart/form-data">
+            <h3 className="mascotas-form__title">Registrar mascota</h3>
+            <label className="mascotas-form__label">Nombre:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Nombre" onChange={e => setNombre(e.target.value)}/>
+            <label className="mascotas-form__label">Descripción:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Descripción" onChange={e => setDescripcion(e.target.value)}/>
+            <label className="mascotas-form__label">Raza:</label>
+            <input className="mascotas-form__input" type="text" placeholder="Raza" onChange={e => setRaza(e.target.value)}/>
+            <label className="mascotas-form__label">Edad:</label>
+            <input className="mascotas-form__input" type="number" placeholder="Edad" onChange={e => setEdad(e.target.value)}/>
+            <label className="mascotas-form__label">Estado:</label>
+            <select className="mascotas-form__select" onChange={e => setEstado(e.target.value)}>
+                {estadoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
+            </select>
+            <label className="mascotas-form__label">Tipo animal:</label>
+            <select className="mascotas-form__select" onChange={e => setTipoAnimal(e.target.value)}>
+                {tipoAnimalChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
+            </select>
+            <label className="mascotas-form__label">Tamaño:</label>
+            <select className="mascotas-form__select" onChange={e => setTamano(e.target.value)}>
+                {tamanoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
+            </select>
+            <label className="mascotas-form__label">Sexo:</label>
+            <select className="mascotas-form__select" onChange={e => setSexo(e.target.value)}>
+                {sexoChoices.map((choice) => (<option key={choice.value} value={choice.value}>{choice.label}</option>))}
+            </select>
+            <label className="mascotas-form__label">Imagen:</label>
+            <input className="mascotas-form__input" onChange={e => setImagen(e.target.files[0])} type="file" placeholder="Imagen" />
+            <button className="mascotas-form__button" type="submit">Guardar</button>
+            <p className="mascotas-form__error">{error}</p>
+        </form >
+    )
 }
 
 export default MascotasForm;

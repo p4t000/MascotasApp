@@ -1,5 +1,6 @@
-import { Routes, Route, NavLink } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import MascotasPage from './pages/MascotasPage'
 import MascotasForm from './components/MascotasForm'
@@ -22,6 +23,10 @@ function App() {
           </Route>
         </Routes>
       </main>
+
+      <footer>
+        <Footer />
+      </footer>
     </>
   )
 }
